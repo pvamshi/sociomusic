@@ -31,7 +31,7 @@ li.active {
 .playing a{ 
     font-weight:bold;
 }
-a.off = {
+a.off {
     width:20px;
     padding:4px;
     background:gray;

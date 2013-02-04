@@ -23,8 +23,12 @@ $(document).ready(function(){
     var playListSize = 0;
     var shuffled = false;
     var shuffledList = new Array();
+    var as;
+
+
+
     //    int[] songOrder ; //= new int[5];
-    document.querySelector('#dir-select').onchange = function(e) {
+    document.querySelector("input[type='file']").onchange = function(e) {
         var iterator = playListSize-1;
         if(iterator == -1){
             $('#list').append('<ul/>');
@@ -37,16 +41,18 @@ $(document).ready(function(){
             iterator++;
             $('#list ul').append('<li class="thumb" id="'+'fil'+iterator+'"><a>'+f.name +'</a></li>');
             fileObjs[iterator]= {};
-            fileObjs[iterator].duri = window.webkitURL.createObjectURL(f);
+            fileObjs[iterator].duri = createObjectURL(f);
             playListSize++;
         }
-        $("#player").html('<audio id="song" src="" controls preload="auto"  > </audio><br/ >');
+        $("#player").html('<audio id="song"  src="" preload="auto"  > </audio><br/ >');
         createPlayList();
-        $('#btns').show();
+        $('#btns').show();       
+    	as = audiojs.createAll();
+  		
         playSong(current_song_number);
     };
     var getFileFormat = function(f){
-        if(f.type === 'audio/mp3'){
+        if(f.type === 'audio/mp3' || f.type === 'audio/mpeg'){
             return "mp3";
         }
         return "none";
@@ -64,14 +70,29 @@ $(document).ready(function(){
 
         var sng = fileObjs[num].duri;
         $("#song").attr('src',sng);
+        $("#song").innerHTML = "<source src= "+ sng+">"
         var song = $("#song")[0];
-        song.play();
+        audioplayer = as[0];
+	    audioplayer.play();
+		
+
+        //as[0].play();
         song.addEventListener('ended',function(){
             $('#fil'+num).removeClass('playing');
             playSong(playList[num].nextSong);
         });
         $('#fil'+num).addClass('playing');
     };
+
+    var  createObjectURL = function(file){
+	    if ( window.webkitURL ) {
+	        return window.webkitURL.createObjectURL( file );
+	    } else if ( window.URL && window.URL.createObjectURL ) {
+	        return window.URL.createObjectURL( file );
+	    } else {
+	        return null;
+	    }
+	}
 
     $('#shuf').click(function(){
         shuffled = !shuffled ;
